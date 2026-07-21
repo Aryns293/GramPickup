@@ -6,7 +6,8 @@ const sendEmail = async ({ to, subject, html }) => {
   }
 
   // Bypass Render's SMTP firewall by relaying through Vercel's Serverless Function
-  const vercelApiUrl = (process.env.CLIENT_ORIGIN || 'https://gram-pickup-one.vercel.app') + '/api/send-email';
+  // Hardcoding the exact URL to avoid any environment variable misconfigurations
+  const vercelApiUrl = 'https://gram-pickup-one.vercel.app/api/send-email';
 
   const res = await fetch(vercelApiUrl, {
     method: 'POST',
