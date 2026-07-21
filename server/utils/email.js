@@ -12,7 +12,10 @@ const sendEmail = async ({ to, subject, html }) => {
   }
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    family: 4, // Force IPv4 explicitly to bypass Render's IPv6 outbound block
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS, // Gmail App Password (not your real password)
