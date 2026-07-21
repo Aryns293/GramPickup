@@ -13,6 +13,9 @@ const sendEmail = async ({ to, subject, html }) => {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS, // Gmail App Password (not your real password)
     },
+    connectionTimeout: 5000, // 5 seconds
+    greetingTimeout: 5000,
+    socketTimeout: 5000,
   });
 
   await transporter.sendMail({
