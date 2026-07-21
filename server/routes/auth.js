@@ -172,7 +172,7 @@ router.put('/profile', protect, validate(profileRules), async (req, res) => {
 // @access  Public
 router.post('/forgot-password', [
   body('email').isEmail().withMessage('Valid email required'),
-], validate([body('email').isEmail()]), async (req, res) => {
+], validate([body('email').isEmail().withMessage('Valid email required')]), async (req, res) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email: email.toLowerCase() });
@@ -256,8 +256,6 @@ router.put('/reset-password/:token', [
   }
 });
 
-module.exports = router;
-
 // @desc    Google OAuth login/register
 // @route   POST /api/auth/google
 // @access  Public
@@ -304,3 +302,5 @@ router.post('/google', async (req, res) => {
     res.status(500).json({ message: 'Google authentication failed' });
   }
 });
+
+module.exports = router;
