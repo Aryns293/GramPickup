@@ -214,8 +214,8 @@ router.post('/forgot-password', [
         `,
       });
     } catch (emailErr) {
-      console.warn('[Forgot Password] Failed to send email. Ensure EMAIL_PASS is a Gmail App Password, not a standard password.');
-      console.warn(`[Forgot Password] Fallback — Here is the reset link for ${user.email}: ${resetUrl}`);
+      console.warn('[Forgot Password] Failed to send email:', emailErr.message);
+      return res.status(500).json({ message: 'Email server rejected login: ' + emailErr.message });
     }
 
     res.json(genericMsg);
