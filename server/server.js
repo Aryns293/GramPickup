@@ -35,18 +35,26 @@ if (process.env.NODE_ENV !== 'test') {
   connectDB();
 }
 
-// Middleware
-const allowedOrigins = (process.env.CLIENT_ORIGIN || 'http://localhost:5173')
+// Always allow localhost (dev) and any *.vercel.app origin (prod preview/main).
+// CLIENT_ORIGIN env var can also contain additional comma-separated origins.
+const configuredOrigins = (process.env.CLIENT_ORIGIN || '')
   .split(',')
-  .map((origin) => origin.trim())
+  .map((o) => o.trim())
   .filter(Boolean);
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true; // allow non-browser requests (Postman, curl, etc.)
+  if (origin === 'http://localhost:5173') return true;
+  if (origin === 'http://localhost:5174') return true;
+  if (origin.endsWith('.vercel.app')) return true;  // all Vercel preview + prod URLs
+  if (configuredOrigins.includes(origin)) return true;
+  return false;
+};
 
 app.use(helmet());
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
+    if (isAllowedOrigin(origin)) return callback(null, true);
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,

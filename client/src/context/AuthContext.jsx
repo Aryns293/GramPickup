@@ -2,7 +2,12 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 
 const AuthContext = createContext(null);
 
-const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5001/api');
+// VITE_API_URL is baked in at build time — must be set in Vercel env vars before deploy.
+// Fallback to Render backend URL if the env var was missing during build.
+const API_URL = import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD
+    ? 'https://grampickup-backend-6he0.onrender.com/api'
+    : 'http://localhost:5001/api');
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
