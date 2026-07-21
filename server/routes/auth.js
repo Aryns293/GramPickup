@@ -273,13 +273,16 @@ router.post('/google', async (req, res) => {
     let user = await User.findOne({ email: email.toLowerCase() });
 
     if (!user) {
-      // New user — create as customer
+      // Check if this new user matches the configured admin email
+      const isAdmin = process.env.ADMIN_EMAIL && email.toLowerCase() === process.env.ADMIN_EMAIL.toLowerCase();
+
+      // New user — create as customer (or admin if email matches)
       user = await User.create({
         name: name || email.split('@')[0],
         email: email.toLowerCase(),
         phone: '0000000000',
         password: googleId + process.env.JWT_SECRET, // Non-guessable password
-        role: 'customer',
+        role: isAdmin ? 'admin' : 'customer',
       });
     }
 
