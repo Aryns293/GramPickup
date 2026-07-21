@@ -1,0 +1,18 @@
+{
+  "name": "grampickup",
+  "version": "1.0.0",
+  "description": "Root configuration for GramPickup Village Parcel Pickup Network",
+  "scripts": {
+    "server": "npm run start --prefix server",
+    "client": "npm run dev --prefix client",
+    "dev": "npx concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "seed": "npm run seed --prefix server",
+    "test": "npm test --prefix server",
+    "build": "npm run build --prefix client",
+    "lint": "npm run lint --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

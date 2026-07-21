@@ -1,0 +1,35 @@
+{
+  "name": "grampickup-server",
+  "version": "1.0.0",
+  "description": "Backend server for GramPickup Village Parcel Pickup Network",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node seed.js",
+    "test": "cross-env NODE_ENV=test JWT_SECRET=test-secret ENABLE_FEE_SCHEDULER=false MONGOMS_DOWNLOAD_DIR=.cache/mongodb-binaries jest --runInBand",
+    "test:watch": "cross-env NODE_ENV=test JWT_SECRET=test-secret ENABLE_FEE_SCHEDULER=false MONGOMS_DOWNLOAD_DIR=.cache/mongodb-binaries jest --watch"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^8.5.2",
+    "express-validator": "^7.3.2",
+    "google-auth-library": "^10.9.0",
+    "helmet": "^8.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.2.1",
+    "morgan": "^1.11.0",
+    "nodemailer": "^9.0.3"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "jest": "^30.4.2",
+    "mongodb-memory-server": "^11.2.0",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.2.2"
+  }
+}
