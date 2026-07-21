@@ -1,4 +1,8 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns');
+
+// Force IPv4 because Render's IPv6 outbound routing for SMTP is broken
+dns.setDefaultResultOrder('ipv4first');
 
 const sendEmail = async ({ to, subject, html }) => {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
