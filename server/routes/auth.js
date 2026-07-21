@@ -196,22 +196,27 @@ router.post('/forgot-password', [
     const clientOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
     const resetUrl     = `${clientOrigin}/reset-password/${rawToken}`;
 
-    await sendEmail({
-      to: user.email,
-      subject: 'GramPickup — Reset Your Password',
-      html: `
-        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px">
-          <h2 style="color:#4f46e5">Reset your password</h2>
-          <p>Hi ${user.name},</p>
-          <p>Someone requested a password reset for your GramPickup account. Click the button below to set a new password. This link expires in <strong>10 minutes</strong>.</p>
-          <a href="${resetUrl}" style="display:inline-block;background:#4f46e5;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0">
-            Reset Password
-          </a>
-          <p style="color:#6b7280;font-size:13px">If you didn't request this, ignore this email. Your password won't change.</p>
-          <p style="color:#6b7280;font-size:13px">Or copy this link:<br/>${resetUrl}</p>
-        </div>
-      `,
-    });
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: 'GramPickup — Reset Your Password',
+        html: `
+          <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px">
+            <h2 style="color:#4f46e5">Reset your password</h2>
+            <p>Hi ${user.name},</p>
+            <p>Someone requested a password reset for your GramPickup account. Click the button below to set a new password. This link expires in <strong>10 minutes</strong>.</p>
+            <a href="${resetUrl}" style="display:inline-block;background:#4f46e5;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0">
+              Reset Password
+            </a>
+            <p style="color:#6b7280;font-size:13px">If you didn't request this, ignore this email. Your password won't change.</p>
+            <p style="color:#6b7280;font-size:13px">Or copy this link:<br/>${resetUrl}</p>
+          </div>
+        `,
+      });
+    } catch (emailErr) {
+      console.warn('[Forgot Password] Failed to send email. Ensure EMAIL_PASS is a Gmail App Password, not a standard password.');
+      console.warn(`[Forgot Password] Fallback — Here is the reset link for ${user.email}: ${resetUrl}`);
+    }
 
     res.json(genericMsg);
   } catch (error) {
