@@ -26,6 +26,7 @@ const notificationRoutes = require('./routes/notifications');
 const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
+app.set('trust proxy', 1); // Trust reverse proxy (e.g. Render) to get real client IPs
 
 // Connect to Database
 if (process.env.NODE_ENV !== 'test') {
