@@ -17,7 +17,8 @@ const ResetPassword = () => {
     if (password.length < 6)  return setError('Password must be at least 6 characters.');
     setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/auth/reset-password/${token}`, {
+      const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://grampickup-backend-6he0.onrender.com/api' : 'http://localhost:5001/api');
+      const res = await fetch(`${API_URL}/auth/reset-password/${token}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),

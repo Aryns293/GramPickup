@@ -42,7 +42,7 @@ const Login = () => {
     onSuccess: async (tokenResponse) => {
       setGoogleLoading(true); setError('');
       try {
-        const API = import.meta.env.VITE_API_URL || '/api';
+        const API = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://grampickup-backend-6he0.onrender.com/api' : 'http://localhost:5001/api');
         const res = await fetch(`${API}/auth/google`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
