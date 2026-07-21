@@ -4,7 +4,7 @@
 
 Instead of waiting for failed doorstep deliveries or travelling to distant courier offices, customers route their online orders to a **nearby verified shop**. Shopkeepers handle storage and use **OTP-based secure handover** when customers come to collect. Admins verify shops and keep the platform in check.
 
-**Live Demo →** [`https://grampickup.vercel.app`](https://grampickup.vercel.app)
+**Live Demo →** [`https://gram-pickup-one.vercel.app`](https://gram-pickup-one.vercel.app)
 
 ---
 
