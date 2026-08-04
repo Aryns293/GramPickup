@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { body } = require('express-validator');
 const User = require('../models/User');
 const Shop = require('../models/Shop');
 const { protect } = require('../middleware/auth');
 const validate = require('../middleware/validate');
+const { sendEmail } = require('../utils/email');
 
 // Generate JWT
 const generateToken = (id) => {
@@ -170,9 +172,9 @@ router.put('/profile', protect, validate(profileRules), async (req, res) => {
 // @desc    Forgot password — send reset link
 // @route   POST /api/auth/forgot-password
 // @access  Public
-router.post('/forgot-password', [
+router.post('/forgot-password', validate([
   body('email').isEmail().withMessage('Valid email required'),
-], validate([body('email').isEmail().withMessage('Valid email required')]), async (req, res) => {
+]), async (req, res) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email: email.toLowerCase() });
@@ -181,9 +183,6 @@ router.post('/forgot-password', [
     const genericMsg = { message: 'If an account with that email exists, a reset link has been sent.' };
 
     if (!user) return res.json(genericMsg);
-
-    const crypto = require('crypto');
-    const { sendEmail } = require('../utils/email');
 
     // Generate raw token and hashed version to store
     const rawToken    = crypto.randomBytes(32).toString('hex');
@@ -228,11 +227,10 @@ router.post('/forgot-password', [
 // @desc    Reset password with token
 // @route   PUT /api/auth/reset-password/:token
 // @access  Public
-router.put('/reset-password/:token', [
+router.put('/reset-password/:token', validate([
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-], validate([body('password').isLength({ min: 6 })]), async (req, res) => {
+]), async (req, res) => {
   try {
-    const crypto      = require('crypto');
     const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
 
     const user = await User.findOne({
