@@ -71,5 +71,6 @@ const parcelSchema = new mongoose.Schema({
 }, {
   timestamps: true,
 });
+parcelSchema.index({ shopId: 1, status: 1 });
 
 module.exports = mongoose.model('Parcel', parcelSchema);
