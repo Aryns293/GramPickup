@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { StatCard, EmptyState, PageHeader } from '../../components/ui';
 import StatusBadge from '../../components/ui/StatusBadge';
-import { greeting, formatDate } from '../../utils/format';
+import { greeting } from '../../utils/format';
 
 const CustomerDashboard = () => {
   const { user, apiFetch } = useAuth();

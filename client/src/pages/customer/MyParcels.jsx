@@ -17,7 +17,6 @@ const MyParcels = () => {
   const [filter,  setFilter]    = useState('All');
   const [search,  setSearch]    = useState('');
   const [expanded, setExpanded] = useState(null);
-  const [rating,  setRating]    = useState({});
   const [cancelId, setCancelId] = useState(null);
   const [cancelReason, setCancelReason] = useState('');
 

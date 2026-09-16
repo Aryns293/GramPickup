@@ -213,8 +213,11 @@ router.post('/forgot-password', validate([
         `,
       });
     } catch (emailErr) {
-      console.warn('[Forgot Password] Failed to send email:', emailErr.message);
-      return res.status(500).json({ message: 'Email server rejected login: ' + emailErr.message });
+      // Log server-side only — do NOT expose send failures to the client.
+      // Returning the same generic message prevents account-existence enumeration
+      // via a distinct 500 response code or error text.
+      console.error('[Forgot Password] Failed to send email:', emailErr.message);
+      return res.json(genericMsg);
     }
 
     res.json(genericMsg);

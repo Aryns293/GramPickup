@@ -61,7 +61,7 @@ const Layout = ({ children }) => {
         if (Array.isArray(data)) {
           setUnreadCount(data.filter(n => !n.readStatus).length);
         }
-      } catch {}
+      } catch { /* Silently ignore notification fetch errors — UI still renders */ }
     };
     fetchUnread();
     const id = user ? setInterval(fetchUnread, 30000) : null;

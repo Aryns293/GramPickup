@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
 const Profile = () => {
-  const { user, apiFetch, updateProfile } = useAuth();
+  const { user, updateProfile } = useAuth();
   const [form, setForm]   = useState({ name:'', phone:'', password:'', confirmPassword:'' });
   const [msg, setMsg]     = useState({ text:'', ok: true });
   const [loading, setLoading] = useState(false);
