@@ -2,7 +2,7 @@
 
 > A village-first parcel pickup network — bridging the last-mile delivery gap for semi-urban and rural India.
 
-Instead of waiting for failed doorstep deliveries or travelling to distant courier offices, customers route their online orders to a **nearby verified shop**. Shopkeepers handle storage and use **OTP-based secure handover** when customers come to collect. Admins verify shops and keep the platform in check.
+Instead of waiting for failed doorstep deliveries or travelling to distant courier offices, customers route their online orders to a **verified pickup shop**. Shopkeepers handle storage and use **OTP-based handover** when customers come to collect. Admins verify shops and keep the platform in check.
 
 **Live Demo →** [`https://gram-pickup-one.vercel.app`](https://gram-pickup-one.vercel.app)
 
@@ -23,7 +23,8 @@ sequenceDiagram
     S->>C: Notification sent
     S->>S: Generates pickup OTP
     C->>S: Visits shop, shares OTP
-    S->>S: Verifies OTP → marks Delivered
+    S->>S: Checks role, shop ownership, parcel status, and OTP
+    S->>S: Marks Delivered
     C->>S: Rates the shop
 ```
 
@@ -78,7 +79,7 @@ graph TD
 ### 👤 Customer
 - Browse verified pickup shops with ratings and location
 - Register expected parcels with tracking number and delivery date
-- Real-time lifecycle tracking: `Expected → Arrived → Ready for Pickup → Delivered`
+- Track parcel lifecycle: `Expected → Arrived → Ready for Pickup → Delivered`
 - View accrued storage fees as days increase
 - Rate shops after successful pickup
 - Forgot password via email reset link
@@ -88,7 +89,7 @@ graph TD
 - Register a shop and await admin approval
 - View and filter incoming parcels by status or search
 - Mark parcels as **Arrived** and generate pickup OTPs
-- Secure OTP-based handover
+- OTP-based handover
 - Revenue dashboard showing all delivered parcels and earnings
 
 ### 🛡️ Admin
@@ -209,11 +210,13 @@ All routes are prefixed with `/api/<resource>`.
 | Method | Route | Access | Description |
 |---|---|---|---|
 | `GET` | `/approved` | Private | List all approved shops |
+| `GET` | `/` | Admin | List all shops |
 | `POST` | `/` | Shopkeeper | Register a new shop |
 | `GET` | `/mine` | Shopkeeper | Get own shop details |
 | `PUT` | `/mine` | Shopkeeper | Update own shop |
 | `PUT` | `/:id/status` | Admin | Approve or reject a shop |
 | `POST` | `/:id/rate` | Customer | Rate a shop after pickup |
+| `GET` | `/:id` | Private | Get single shop details |
 
 ### Parcels — `/api/parcels`
 
