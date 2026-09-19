@@ -17,7 +17,7 @@ const AdminAnalytics = () => {
 
   useEffect(() => { apiFetch('/analytics/dashboard')
       .then(res => setData({ ...res.summary, monthlyParcels: res.monthlyParcels, monthlyRevenue: res.monthlyRevenue }))
-      .catch(console.error).finally(() => setLoading(false)); }, []);
+      .catch(console.error).finally(() => setLoading(false)); }, [apiFetch]);
 
   if (loading) return <div className="animate-pulse space-y-4"><div className="h-8 bg-gray-100 dark:bg-gray-800 rounded w-48 mb-6"/><div className="grid grid-cols-2 lg:grid-cols-4 gap-4">{[1,2,3,4].map(i=><div key={i} className="card p-6"><div className="h-8 bg-gray-100 dark:bg-gray-800 rounded mb-2"/></div>)}</div></div>;
 

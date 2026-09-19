@@ -32,13 +32,12 @@ const XIcon = () => (
 );
 
 const Layout = ({ children }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, apiFetch } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [dark, setDark] = useDarkMode();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const { apiFetch } = useAuth();
 
   const handleLogout = () => {
     logout();
@@ -66,7 +65,7 @@ const Layout = ({ children }) => {
     fetchUnread();
     const id = user ? setInterval(fetchUnread, 30000) : null;
     return () => { if (id) clearInterval(id); };
-  }, [user, location.pathname]);
+  }, [apiFetch, user, location.pathname]);
 
   const customerLinks = [
     { to: '/customer/dashboard', label: 'Dashboard' },

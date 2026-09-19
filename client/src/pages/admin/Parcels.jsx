@@ -10,7 +10,7 @@ const AdminParcels = () => {
   const [filter, setFilter]   = useState('All');
   const [search, setSearch]   = useState('');
 
-  useEffect(() => { apiFetch('/parcels').then(setParcels).catch(console.error).finally(() => setLoading(false)); }, []);
+  useEffect(() => { apiFetch('/parcels').then(setParcels).catch(console.error).finally(() => setLoading(false)); }, [apiFetch]);
 
   const statuses = ['All','Expected','Arrived','Ready for Pickup','Delivered','Cancelled'];
   const filtered = parcels.filter(p => {

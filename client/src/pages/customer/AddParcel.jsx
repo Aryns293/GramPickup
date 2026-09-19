@@ -11,7 +11,9 @@ const AddParcel = () => {
   const [loading, setLoading] = useState(false);
   const [shopSearch, setShopSearch] = useState('');
 
-  useEffect(() => { apiFetch('/shops/approved').then(setShops).catch(console.error); }, []);
+  useEffect(() => {
+    apiFetch('/shops/approved').then(setShops).catch(console.error);
+  }, [apiFetch]);
 
   const filteredShops = shops.filter(s =>
     s.shopName.toLowerCase().includes(shopSearch.toLowerCase()) ||

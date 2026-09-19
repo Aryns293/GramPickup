@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { SkeletonTable } from '../../components/ui';
@@ -12,11 +12,14 @@ const IncomingParcels = () => {
   const [search, setSearch]   = useState('');
   const [actionLoading, setActionLoading] = useState(null);
 
-  const load = () => {
+  const load = useCallback(() => {
     setLoading(true);
     apiFetch('/parcels/incoming').then(setParcels).catch(console.error).finally(() => setLoading(false));
-  };
-  useEffect(load, []);
+  }, [apiFetch]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const filtered = parcels.filter(p => {
     const matchTab = p.status === tab;

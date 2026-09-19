@@ -11,7 +11,7 @@ const Revenue = () => {
       .then(d => setParcels(d?.parcels || []))
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, []);
+  }, [apiFetch]);
 
   const total = parcels.reduce((a, p) => a + (p.fee || 0), 0);
   const thisMonth = parcels.filter(p => {

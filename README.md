@@ -55,7 +55,6 @@ stateDiagram-v2
     Expected --> Cancelled : Customer cancels (before arrival)
     Arrived --> ReadyForPickup : Shopkeeper generates OTP
     ReadyForPickup --> Delivered : OTP verified
-    Arrived --> Delivered : Direct handover (bypass OTP)
     Delivered --> [*]
     Cancelled --> [*]
 ```
@@ -89,7 +88,7 @@ graph TD
 - Register a shop and await admin approval
 - View and filter incoming parcels by status or search
 - Mark parcels as **Arrived** and generate pickup OTPs
-- Secure OTP-based handover or direct handover override
+- Secure OTP-based handover
 - Revenue dashboard showing all delivered parcels and earnings
 
 ### 🛡️ Admin
@@ -104,7 +103,7 @@ graph TD
 
 | Layer | Technology |
 |---|---|
-| Frontend | React 19, Vite, React Router v6, Tailwind CSS |
+| Frontend | React 19, Vite, React Router v7, Tailwind CSS |
 | Backend | Node.js, Express.js |
 | Database | MongoDB, Mongoose |
 | Auth | JWT (jsonwebtoken), bcryptjs |
@@ -209,7 +208,7 @@ All routes are prefixed with `/api/<resource>`.
 
 | Method | Route | Access | Description |
 |---|---|---|---|
-| `GET` | `/approved` | Public | List all approved shops |
+| `GET` | `/approved` | Private | List all approved shops |
 | `POST` | `/` | Shopkeeper | Register a new shop |
 | `GET` | `/mine` | Shopkeeper | Get own shop details |
 | `PUT` | `/mine` | Shopkeeper | Update own shop |
@@ -227,7 +226,6 @@ All routes are prefixed with `/api/<resource>`.
 | `PUT` | `/:id/received` | Shopkeeper | Mark parcel as Arrived |
 | `PUT` | `/:id/ready` | Shopkeeper | Generate OTP, mark Ready |
 | `PUT` | `/:id/deliver` | Shopkeeper | Verify OTP, mark Delivered |
-| `PUT` | `/:id/deliver-direct` | Shopkeeper | Direct handover (no OTP) |
 | `GET` | `/revenue` | Shopkeeper | Revenue from delivered parcels |
 | `GET` | `/` | Admin | Get all parcels (filterable) |
 

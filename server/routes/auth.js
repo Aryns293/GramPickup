@@ -231,7 +231,7 @@ router.post('/forgot-password', validate([
 // @route   PUT /api/auth/reset-password/:token
 // @access  Public
 router.put('/reset-password/:token', validate([
-  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+  body('password').isLength({ min: 6, max: 72 }).withMessage('Password must be 6 to 72 characters'),
 ]), async (req, res) => {
   try {
     const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
@@ -260,7 +260,9 @@ router.put('/reset-password/:token', validate([
 // @desc    Google OAuth login/register
 // @route   POST /api/auth/google
 // @access  Public
-router.post('/google', async (req, res) => {
+router.post('/google', validate([
+  body('accessToken').trim().isLength({ min: 20, max: 4096 }).withMessage('Valid Google access token is required'),
+]), async (req, res) => {
   try {
     const { accessToken } = req.body;
     if (!accessToken) return res.status(400).json({ message: 'Access token required' });

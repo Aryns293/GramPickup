@@ -15,7 +15,7 @@ const ShopkeeperDashboard = () => {
       apiFetch('/shops/mine').catch(() => null),
     ]).then(([p, s]) => { setParcels(p || []); setShop(s); })
       .finally(() => setLoading(false));
-  }, []);
+  }, [apiFetch]);
 
   const stats = {
     arrived:   parcels.filter(p => p.status === 'Arrived').length,

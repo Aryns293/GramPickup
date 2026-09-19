@@ -21,7 +21,7 @@ const CustomerShops = () => {
 
   useEffect(() => {
     apiFetch('/shops/approved').then(setShops).catch(console.error).finally(() => setLoading(false));
-  }, []);
+  }, [apiFetch]);
 
   const filtered = shops.filter(s =>
     s.shopName.toLowerCase().includes(search.toLowerCase()) ||

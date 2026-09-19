@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
 const AdminUsers = () => {
@@ -9,8 +9,14 @@ const AdminUsers = () => {
   const [search, setSearch] = useState('');
   const [busy, setBusy]     = useState(null);
 
-  const load = () => { setLoading(true); apiFetch('/analytics/users').then(setUsers).catch(console.error).finally(() => setLoading(false)); };
-  useEffect(load, []);
+  const load = useCallback(() => {
+    setLoading(true);
+    apiFetch('/analytics/users').then(setUsers).catch(console.error).finally(() => setLoading(false));
+  }, [apiFetch]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const handleDelete = async (id, name) => {
     if (!confirm(`Delete user "${name}"? This removes all their data permanently.`)) return;

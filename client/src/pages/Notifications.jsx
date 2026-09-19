@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { EmptyState } from '../components/ui';
 import { formatDateTime } from '../utils/format';
@@ -25,11 +25,14 @@ const Notifications = () => {
   const [loading, setLoading] = useState(true);
   const [marking, setMarking] = useState(false);
 
-  const load = () => {
+  const load = useCallback(() => {
     setLoading(true);
     apiFetch('/notifications').then(setNotifs).catch(console.error).finally(() => setLoading(false));
-  };
-  useEffect(load, []);
+  }, [apiFetch]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const markOne = async (id) => {
     try { await apiFetch(`/notifications/${id}/read`, { method:'PUT', body:'{}' }); load(); }

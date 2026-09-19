@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
 
@@ -20,11 +20,14 @@ const MyParcels = () => {
   const [cancelId, setCancelId] = useState(null);
   const [cancelReason, setCancelReason] = useState('');
 
-  const load = () => {
+  const load = useCallback(() => {
     setLoading(true);
     apiFetch('/parcels/my-parcels').then(setParcels).catch(console.error).finally(() => setLoading(false));
-  };
-  useEffect(load, []);
+  }, [apiFetch]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const statuses = ['All','Expected','Arrived','Ready for Pickup','Delivered','Cancelled'];
   const filtered = parcels.filter(p => {

@@ -17,7 +17,7 @@ const ShopkeeperProfile = () => {
       setShop(s);
       if (s) setShopForm({ shopName: s.shopName, address: s.address, city: s.city, phone: s.phone || '' });
     }).catch(() => setShop(null));
-  }, [user]);
+  }, [apiFetch, user]);
 
   const handleUserSubmit = async (e) => {
     e.preventDefault(); setUserMsg({ text:'', ok:true });

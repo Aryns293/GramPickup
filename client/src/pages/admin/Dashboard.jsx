@@ -12,7 +12,7 @@ const AdminDashboard = () => {
     apiFetch('/analytics/dashboard')
       .then(data => setStats({ ...data.summary, monthlyParcels: data.monthlyParcels, monthlyRevenue: data.monthlyRevenue }))
       .catch(console.error).finally(() => setLoading(false));
-  }, []);
+  }, [apiFetch]);
 
   return (
     <div className="animate-fade-in">

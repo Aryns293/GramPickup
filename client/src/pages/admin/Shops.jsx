@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
 const AdminShops = () => {
@@ -8,11 +8,14 @@ const AdminShops = () => {
   const [filter, setFilter]   = useState('pending');
   const [busy, setBusy]       = useState(null);
 
-  const load = () => {
+  const load = useCallback(() => {
     setLoading(true);
     apiFetch('/shops').then(setShops).catch(console.error).finally(() => setLoading(false));
-  };
-  useEffect(load, []);
+  }, [apiFetch]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const handleStatus = async (id, status) => {
     setBusy(id);

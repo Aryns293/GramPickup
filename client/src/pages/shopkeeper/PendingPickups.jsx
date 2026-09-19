@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { EmptyState } from '../../components/ui';
@@ -11,13 +11,16 @@ const PendingPickups = () => {
   const [otpInputs, setOtpInputs] = useState({});
   const [busy, setBusy] = useState(null);
 
-  const load = () => {
+  const load = useCallback(() => {
     setLoading(true);
     apiFetch('/parcels/incoming')
       .then(data => setParcels((data || []).filter(p => p.status === 'Ready for Pickup')))
       .catch(console.error).finally(() => setLoading(false));
-  };
-  useEffect(load, []);
+  }, [apiFetch]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const handleDeliver = async (id) => {
     const otp = otpInputs[id] || '';
@@ -29,18 +32,6 @@ const PendingPickups = () => {
       load();
     } catch(e) {
       toast.error(e.message || 'Invalid OTP — please try again');
-    } finally { setBusy(null); }
-  };
-
-  const handleDirect = async (id) => {
-    if (!confirm('Bypass OTP verification? Only use in emergencies.')) return;
-    setBusy(id);
-    try {
-      await apiFetch(`/parcels/${id}/deliver-direct`, { method: 'PUT', body: JSON.stringify({}) });
-      toast.success('Direct handover recorded.');
-      load();
-    } catch(e) {
-      toast.error(e.message);
     } finally { setBusy(null); }
   };
 
@@ -100,10 +91,6 @@ const PendingPickups = () => {
                   <button disabled={busy === p._id} onClick={() => handleDeliver(p._id)}
                     className="btn-primary disabled:opacity-50">
                     {busy === p._id ? '…' : 'Verify & Deliver'}
-                  </button>
-                  <button disabled={busy === p._id} onClick={() => handleDirect(p._id)}
-                    className="btn-secondary text-xs disabled:opacity-50">
-                    Direct
                   </button>
                 </div>
               </div>

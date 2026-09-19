@@ -13,7 +13,7 @@ const CustomerDashboard = () => {
   useEffect(() => {
     apiFetch('/parcels/my-parcels')
       .then(setParcels).catch(console.error).finally(() => setLoading(false));
-  }, []);
+  }, [apiFetch]);
 
   const counts = {
     total:     parcels.length,

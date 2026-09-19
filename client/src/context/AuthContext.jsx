@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback, useMemo } from 'react';
 
 const AuthContext = createContext(null);
 
@@ -12,6 +12,7 @@ const API_URL = import.meta.env.VITE_API_URL ||
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const authToken = user?.token;
 
   // Load user data on startup
   useEffect(() => {
@@ -26,8 +27,14 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+  // Logout action
+  const logout = useCallback(() => {
+    localStorage.removeItem('grampickup_user');
+    setUser(null);
+  }, []);
+
   // Standard API call helper
-  const apiFetch = async (endpoint, options = {}) => {
+  const apiFetch = useCallback(async (endpoint, options = {}) => {
     const url = `${API_URL}${endpoint}`;
     
     // Set headers
@@ -36,8 +43,8 @@ export const AuthProvider = ({ children }) => {
       ...options.headers,
     };
 
-    if (user && user.token) {
-      headers['Authorization'] = `Bearer ${user.token}`;
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
     }
 
     const config = {
@@ -62,10 +69,10 @@ export const AuthProvider = ({ children }) => {
       console.error(`API Fetch Error [${endpoint}]:`, error);
       throw error;
     }
-  };
+  }, [authToken, logout]);
 
   // Login action
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     try {
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
@@ -85,10 +92,10 @@ export const AuthProvider = ({ children }) => {
       console.error('Login action error:', error);
       throw error;
     }
-  };
+  }, []);
 
   // Register action
-  const register = async (name, email, phone, password, role) => {
+  const register = useCallback(async (name, email, phone, password, role) => {
     try {
       const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
@@ -108,16 +115,10 @@ export const AuthProvider = ({ children }) => {
       console.error('Register action error:', error);
       throw error;
     }
-  };
-
-  // Logout action
-  const logout = () => {
-    localStorage.removeItem('grampickup_user');
-    setUser(null);
-  };
+  }, []);
 
   // Update profile
-  const updateProfile = async (profileData) => {
+  const updateProfile = useCallback(async (profileData) => {
     try {
       const data = await apiFetch('/auth/profile', {
         method: 'PUT',
@@ -136,20 +137,31 @@ export const AuthProvider = ({ children }) => {
       console.error('Update profile error:', error);
       throw error;
     }
-  };
+  }, [apiFetch, user]);
 
   // Sync shop registration in user context (for shopkeeper flow)
-  const syncShopContext = (shopData) => {
+  const syncShopContext = useCallback((shopData) => {
     const updatedUser = {
       ...user,
       shop: shopData,
     };
     localStorage.setItem('grampickup_user', JSON.stringify(updatedUser));
     setUser(updatedUser);
-  };
+  }, [user]);
+
+  const value = useMemo(() => ({
+    user,
+    loading,
+    login,
+    register,
+    logout,
+    apiFetch,
+    updateProfile,
+    syncShopContext,
+  }), [user, loading, login, register, logout, apiFetch, updateProfile, syncShopContext]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, apiFetch, updateProfile, syncShopContext }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

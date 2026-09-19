@@ -288,50 +288,6 @@ router.put('/:id/deliver', protect, authorize('shopkeeper'), validate(otpRules),
   }
 });
 
-// @desc    Mark parcel as delivered directly without OTP (direct handover bypass)
-// @route   PUT /api/parcels/:id/deliver-direct
-// @access  Private (Shopkeeper only)
-router.put('/:id/deliver-direct', protect, authorize('shopkeeper'), validate(objectIdParam), async (req, res) => {
-  try {
-    const parcel = await Parcel.findById(req.params.id);
-    if (!parcel) {
-      return res.status(404).json({ message: 'Parcel not found' });
-    }
-
-    // Verify shop ownership
-    const shop = await Shop.findOne({ ownerId: req.user._id });
-    if (!shop || parcel.shopId.toString() !== shop._id.toString()) {
-      return res.status(403).json({ message: 'Not authorized to modify this parcel' });
-    }
-
-    if (parcel.status !== 'Ready for Pickup' && parcel.status !== 'Arrived') {
-      return res.status(400).json({ message: 'Parcel must be Arrived or Ready for Pickup to hand over' });
-    }
-
-    parcel.status = 'Delivered';
-    parcel.pickupDate = new Date();
-    addTimelineEvent(parcel, 'Delivered', 'Parcel delivered through direct handover override', 'shopkeeper');
-    
-    // Lock in final fee
-    const details = getFeeDetails(parcel);
-    parcel.fee = details.fee;
-    
-    await parcel.save();
-
-    // Notify customer
-    await Notification.create({
-      userId: parcel.customerId,
-      title: 'Parcel Delivered (Direct)',
-      message: `Your parcel "${parcel.parcelName}" (Tracking: ${parcel.trackingNumber}) was successfully marked as collected from "${shop.shopName}". Collected fee: ₹${details.fee}.`,
-    });
-
-    res.json(parcel);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
 // @desc    Cancel an expected parcel before it arrives at the shop
 // @route   PUT /api/parcels/:id/cancel
 // @access  Private (Customer only)
